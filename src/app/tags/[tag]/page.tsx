@@ -55,7 +55,7 @@ export default async function TagPage({ params }: PageProps) {
       return {
         slug: file.replace(/\.md$/, '').split(path.sep),
         title: data.title || file.replace(/\.md$/, ''),
-        tags: data.tags || [],
+        tags: data.tags?.map((t: string) => decodeURIComponent(t)) || [],
       };
     })
     .filter(article => article.tags.includes(decodedTag))
