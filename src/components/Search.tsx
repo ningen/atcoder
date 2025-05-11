@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useDebounce } from 'use-debounce';
@@ -9,33 +11,28 @@ interface SearchResult {
   content: string;
 }
 
-export default function Search() {
+interface SearchProps {
+  initialSearchIndex: SearchResult[];
+}
+
+export default function Search({ initialSearchIndex }: SearchProps) {
   const [query, setQuery] = useState('');
   const [debouncedQuery] = useDebounce(query, 300);
   const [results, setResults] = useState<SearchResult[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const search = async () => {
-      if (!debouncedQuery) {
-        setResults([]);
-        return;
-      }
+    if (!debouncedQuery) {
+      setResults([]);
+      return;
+    }
 
-      setIsLoading(true);
-      try {
-        const response = await fetch(`/api/search?q=${encodeURIComponent(debouncedQuery)}`);
-        const data = await response.json();
-        setResults(data.results);
-      } catch (error) {
-        console.error('検索エラー:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    const searchResults = initialSearchIndex.filter(item => {
+      const searchableText = `${item.title} ${item.content} ${item.tags.join(' ')}`.toLowerCase();
+      return searchableText.includes(debouncedQuery.toLowerCase());
+    });
 
-    search();
-  }, [debouncedQuery]);
+    setResults(searchResults);
+  }, [debouncedQuery, initialSearchIndex]);
 
   // 検索結果の内容を整形する関数
   const formatContent = (content: string, query: string) => {
@@ -66,12 +63,6 @@ export default function Search() {
           placeholder="記事を検索..."
           className="w-full p-3 border rounded-lg text-lg"
         />
-        
-        {isLoading && (
-          <div className="absolute right-3 top-3">
-            <div className="animate-spin h-6 w-6 border-2 border-gray-500 rounded-full border-t-transparent"></div>
-          </div>
-        )}
       </div>
 
       {results.length > 0 ? (
@@ -92,7 +83,7 @@ export default function Search() {
             </Link>
           ))}
         </div>
-      ) : query && !isLoading ? (
+      ) : query ? (
         <div className="text-center text-gray-500 py-8">
           検索結果が見つかりませんでした
         </div>
