@@ -1,6 +1,6 @@
 ---
 title: Python で使う標準ライブラリ
-tags: []
+tags: ["累積和", "combination"]
 ---
 
 # Python で使う標準ライブラリ

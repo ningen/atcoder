@@ -1,6 +1,6 @@
 ---
 title: BFS
-tags: []
+tags: ["bfs"]
 ---
 
 # BFS
