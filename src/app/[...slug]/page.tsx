@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { marked } from 'marked';
 import { Metadata } from 'next';
 import hljs from 'highlight.js';
+import matter from 'gray-matter';
 import 'highlight.js/styles/github-dark.css';
 
 // markedの設定
@@ -35,9 +36,20 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const resolvedParams = await params;
-  return {
-    title: resolvedParams.slug.join('/'),
-  };
+  const filePath = path.join(process.cwd(), 'notes', ...resolvedParams.slug) + '.md';
+  
+  try {
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const { data } = matter(fileContent);
+    return {
+      title: resolvedParams.slug.join('/'),
+      description: data.description || '',
+    };
+  } catch {
+    return {
+      title: resolvedParams.slug.join('/'),
+    };
+  }
 }
 
 export default async function NotePage({ params }: PageProps) {
@@ -45,11 +57,25 @@ export default async function NotePage({ params }: PageProps) {
   const filePath = path.join(process.cwd(), 'notes', ...resolvedParams.slug) + '.md';
   
   try {
-    const content = fs.readFileSync(filePath, 'utf-8');
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const { content, data } = matter(fileContent);
     const html = marked(content);
 
     return (
       <div className="container mx-auto px-4 py-8">
+        {data.tags && data.tags.length > 0 && (
+          <div className="flex gap-2 mb-4">
+            {data.tags.map((tag: string) => (
+              <a
+                key={tag}
+                href={`/tags/${encodeURIComponent(tag)}`}
+                className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm hover:bg-blue-200 transition-colors"
+              >
+                {tag}
+              </a>
+            ))}
+          </div>
+        )}
         <article 
           className="markdown prose lg:prose-xl mx-auto"
           dangerouslySetInnerHTML={{ __html: html }}
