@@ -3,6 +3,19 @@ import path from 'path';
 import { notFound } from 'next/navigation';
 import { marked } from 'marked';
 import { Metadata } from 'next';
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github-dark.css';
+
+// markedの設定
+marked.use({
+  renderer: {
+    code(this, code) {
+      const validLanguage = code.lang && hljs.getLanguage(code.lang) ? code.lang : 'plaintext';
+      const highlighted = hljs.highlight(code.text, { language: validLanguage }).value;
+      return `<pre><code class="hljs language-${validLanguage}">${highlighted}</code></pre>`;
+    }
+  }
+});
 
 interface PageProps {
   params: Promise<{
@@ -38,7 +51,7 @@ export default async function NotePage({ params }: PageProps) {
     return (
       <div className="container mx-auto px-4 py-8">
         <article 
-          className="prose lg:prose-xl mx-auto"
+          className="markdown prose lg:prose-xl mx-auto"
           dangerouslySetInnerHTML={{ __html: html }}
         />
       </div>

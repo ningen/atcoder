@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 @theme inline {
@@ -12,15 +12,196 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .markdown {
+    @apply text-gray-200 leading-relaxed;
+
+    h1 {
+      @apply text-4xl font-bold mt-8 mb-4 text-white;
+    }
+
+    h2 {
+      @apply text-3xl font-bold mt-8 mb-4 text-white;
+    }
+
+    h3 {
+      @apply text-2xl font-bold mt-6 mb-3 text-white;
+    }
+
+    h4 {
+      @apply text-xl font-bold mt-4 mb-2 text-white;
+    }
+
+    p {
+      @apply my-4;
+    }
+
+    ul,
+    ol {
+      @apply my-4 ml-6;
+    }
+
+    ul {
+      @apply list-disc;
+    }
+
+    ol {
+      @apply list-decimal;
+    }
+
+    li {
+      @apply my-1;
+    }
+
+    a {
+      @apply text-blue-400 hover:text-blue-300 underline;
+    }
+
+    code {
+      @apply bg-gray-800 px-1.5 py-0.5 rounded text-sm font-mono;
+    }
+
+    pre {
+      @apply bg-gray-800 p-4 rounded-lg my-4 overflow-x-auto;
+    }
+
+    pre code {
+      @apply bg-transparent p-0 text-sm;
+    }
+
+    /* highlight.jsのスタイル調整 */
+    .hljs {
+      @apply bg-transparent text-gray-200;
+    }
+
+    .hljs-keyword,
+    .hljs-selector-tag,
+    .hljs-subst {
+      @apply text-purple-400 font-semibold;
+    }
+
+    .hljs-string,
+    .hljs-doctag {
+      @apply text-green-400;
+    }
+
+    .hljs-title,
+    .hljs-section,
+    .hljs-selector-id {
+      @apply text-blue-400 font-semibold;
+    }
+
+    .hljs-type,
+    .hljs-class .hljs-title {
+      @apply text-yellow-400 font-semibold;
+    }
+
+    .hljs-tag,
+    .hljs-name,
+    .hljs-attribute {
+      @apply text-blue-300;
+    }
+
+    .hljs-regexp,
+    .hljs-link {
+      @apply text-orange-400;
+    }
+
+    .hljs-symbol,
+    .hljs-bullet {
+      @apply text-pink-400;
+    }
+
+    .hljs-built_in,
+    .hljs-builtin-name {
+      @apply text-cyan-400;
+    }
+
+    .hljs-meta {
+      @apply text-gray-400;
+    }
+
+    .hljs-deletion {
+      @apply bg-red-900/50;
+    }
+
+    .hljs-addition {
+      @apply bg-green-900/50;
+    }
+
+    .hljs-emphasis {
+      @apply italic;
+    }
+
+    .hljs-strong {
+      @apply font-bold;
+    }
+
+    .hljs-comment {
+      @apply text-gray-500 italic;
+    }
+
+    .hljs-quote {
+      @apply text-gray-500 italic;
+    }
+
+    .hljs-number {
+      @apply text-orange-400;
+    }
+
+    .hljs-literal {
+      @apply text-orange-400;
+    }
+
+    .hljs-variable {
+      @apply text-yellow-300;
+    }
+
+    .hljs-template-variable {
+      @apply text-yellow-300;
+    }
+
+    .hljs-attr {
+      @apply text-blue-300;
+    }
+
+    .hljs-property {
+      @apply text-blue-300;
+    }
+
+    blockquote {
+      @apply border-l-4 border-gray-600 pl-4 my-4 italic text-gray-400;
+    }
+
+    table {
+      @apply w-full my-4 border-collapse;
+    }
+
+    th,
+    td {
+      @apply border border-gray-600 px-4 py-2;
+    }
+
+    th {
+      @apply bg-gray-800 font-semibold;
+    }
+
+    img {
+      @apply max-w-full h-auto my-4 rounded-lg;
+    }
+
+    hr {
+      @apply my-8 border-t border-gray-600;
+    }
+  }
 }
