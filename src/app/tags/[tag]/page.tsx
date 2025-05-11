@@ -52,6 +52,8 @@ export default async function TagPage({ params }: PageProps) {
       const filePath = path.join(notesDir, file);
       const content = fs.readFileSync(filePath, 'utf-8');
       const { data } = matter(content);
+      const title = data.title;
+      console.log(title, { tags: data.tags || []})
       return {
         slug: file.replace(/\.md$/, '').split(path.sep),
         title: data.title || file.replace(/\.md$/, ''),
