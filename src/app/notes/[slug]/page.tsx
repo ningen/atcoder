@@ -10,6 +10,16 @@ interface PageProps {
   }>;
 }
 
+export async function generateStaticParams() {
+  const notesDir = path.join(process.cwd(), 'notes');
+  const files = fs.readdirSync(notesDir, { recursive: true })
+    .filter((file): file is string => typeof file === 'string' && file.endsWith('.md'));
+
+  return files.map((file) => ({
+    slug: file.replace(/\.md$/, ''),
+  }));
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const resolvedParams = await params;
   return {
