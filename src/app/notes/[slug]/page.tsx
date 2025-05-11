@@ -3,7 +3,13 @@ import path from 'path';
 import { notFound } from 'next/navigation';
 import { marked } from 'marked';
 
-export default function NotePage({ params }: { params: { slug: string } }) {
+type Props = {
+  params: {
+    slug: string;
+  };
+};
+
+export default async function NotePage({ params }: Props) {
   const filePath = path.join(process.cwd(), 'notes', `${params.slug}.md`);
   
   try {
