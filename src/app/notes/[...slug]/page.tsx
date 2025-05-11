@@ -6,7 +6,7 @@ import { Metadata } from 'next';
 
 interface PageProps {
   params: Promise<{
-    slug: string;
+    slug: string[];
   }>;
 }
 
@@ -16,20 +16,20 @@ export async function generateStaticParams() {
     .filter((file): file is string => typeof file === 'string' && file.endsWith('.md'));
 
   return files.map((file) => ({
-    slug: file.replace(/\.md$/, ''),
+    slug: file.replace(/\.md$/, '').split(path.sep),
   }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const resolvedParams = await params;
   return {
-    title: resolvedParams.slug,
+    title: resolvedParams.slug.join('/'),
   };
 }
 
 export default async function NotePage({ params }: PageProps) {
   const resolvedParams = await params;
-  const filePath = path.join(process.cwd(), 'notes', `${resolvedParams.slug}.md`);
+  const filePath = path.join(process.cwd(), 'notes', ...resolvedParams.slug) + '.md';
   
   try {
     const content = fs.readFileSync(filePath, 'utf-8');
@@ -43,7 +43,8 @@ export default async function NotePage({ params }: PageProps) {
         />
       </div>
     );
-  } catch {
+  } catch (error) {
+    console.error(`Failed to load file: ${filePath}`, error);
     notFound();
   }
 } 
