@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { fileURLToPath } from 'url';
 
 interface SearchIndex {
   title: string;
@@ -9,6 +10,8 @@ interface SearchIndex {
   tags: string[];
 }
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const notesDir = path.join(process.cwd(), 'notes');
 const outputDir = path.join(process.cwd(), 'public');
 
