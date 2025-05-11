@@ -37,7 +37,7 @@ export default async function NotesPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 text-white">AtCoder Notes</h1>
+      <h1 className="text-3xl font-bold mb-8 text-white">記事一覧</h1>
       <div className="space-y-4">
         {notes.map((note) => (
           <article key={note.slug} className="group">
