@@ -18,7 +18,7 @@ export default function NotePage({ params }: { params: { slug: string } }) {
         />
       </div>
     );
-  } catch (error) {
+  } catch {
     notFound();
   }
 } 
