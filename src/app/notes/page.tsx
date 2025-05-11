@@ -1,8 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import Link from 'next/link';
+import { Metadata } from 'next';
 
-export default function NotesPage() {
+export const metadata: Metadata = {
+  title: 'Notes',
+};
+
+export default async function NotesPage() {
   const notesDir = path.join(process.cwd(), 'notes');
   const files = fs.readdirSync(notesDir, { recursive: true })
     .filter((file): file is string => typeof file === 'string' && file.endsWith('.md'));

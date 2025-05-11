@@ -2,15 +2,24 @@ import fs from 'fs';
 import path from 'path';
 import { notFound } from 'next/navigation';
 import { marked } from 'marked';
+import { Metadata } from 'next';
 
-type Props = {
-  params: {
+interface PageProps {
+  params: Promise<{
     slug: string;
-  };
-};
+  }>;
+}
 
-export default async function NotePage({ params }: Props) {
-  const filePath = path.join(process.cwd(), 'notes', `${params.slug}.md`);
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  return {
+    title: resolvedParams.slug,
+  };
+}
+
+export default async function NotePage({ params }: PageProps) {
+  const resolvedParams = await params;
+  const filePath = path.join(process.cwd(), 'notes', `${resolvedParams.slug}.md`);
   
   try {
     const content = fs.readFileSync(filePath, 'utf-8');
