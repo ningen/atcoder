@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import { marked } from 'marked';
 import { notFound } from 'next/navigation';
-import { Dirent } from 'fs';
 import { Metadata } from 'next';
 import hljs from 'highlight.js';
 import matter from 'gray-matter';
@@ -107,7 +106,7 @@ export default async function NotePage({ params }: PageProps) {
         />
       </div>
     );
-  } catch (fileError) {
+  } catch {
     // マークダウンファイルが存在しない場合は、ディレクトリの内容を表示
     try {
       const entries = fs.readdirSync(basePath, { withFileTypes: true });

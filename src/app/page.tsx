@@ -1,6 +1,5 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import { Dirent } from 'fs';
 import NoteLink from '@/components/NoteLink';
 import Breadcrumb from '@/components/Breadcrumb';
 import { Metadata } from 'next';
