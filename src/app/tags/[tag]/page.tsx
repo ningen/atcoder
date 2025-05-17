@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-// import { notFound } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Breadcrumb from '@/components/Breadcrumb';
 import NoteLink from '@/components/NoteLink';
 
@@ -66,8 +66,7 @@ export default async function TagPage({ params }: PageProps) {
     .sort((a, b) => a.title.localeCompare(b.title));
 
   if (articles.length === 0) {
-    // notFound();
-    return <div>Not Found</div>
+    notFound();
   }
 
   return (
