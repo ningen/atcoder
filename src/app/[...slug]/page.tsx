@@ -49,15 +49,9 @@ export async function generateStaticParams() {
   const notesDir = path.join(process.cwd(), 'notes');
   const paths = getAllPaths(notesDir);
   
-  // ルートパスを追加し、pageパスを除外
-  return [
-    { slug: [] },
-    ...paths
-      .filter(path => !path.includes('page'))
-      .map((path) => ({
-        slug: path,
-      }))
-  ];
+  return paths.map((path) => ({
+    slug: path,
+  }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
