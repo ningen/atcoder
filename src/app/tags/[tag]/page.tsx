@@ -3,6 +3,7 @@ import path from 'path';
 import Link from 'next/link';
 import matter from 'gray-matter';
 import { notFound } from 'next/navigation';
+import Breadcrumb from '@/components/Breadcrumb';
 
 interface Article {
   slug: string[];
@@ -69,6 +70,12 @@ export default async function TagPage({ params }: PageProps) {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <Breadcrumb
+        items={[
+          { label: 'タグ一覧', href: '/tags' },
+          { label: decodedTag }
+        ]}
+      />
       <h1 className="text-3xl font-bold mb-8">
         タグ: {decodedTag}
       </h1>

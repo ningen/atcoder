@@ -24,10 +24,13 @@ export default function NoteLink({ href, title, date, tags = [], isDirectory = f
             <div className="flex items-center space-x-4 text-sm">
               {date && (
                 <time dateTime={date} className="text-gray-400">
-                  {new Date(date).toLocaleDateString('ja-JP', {
+                  {new Date(date).toLocaleString('ja-JP', {
                     year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
                   })}
                 </time>
               )}

@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import Link from 'next/link';
 import matter from 'gray-matter';
+import Breadcrumb from '@/components/Breadcrumb';
 
 interface TagInfo {
   tag: string;
@@ -33,6 +34,7 @@ export default function TagsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <Breadcrumb items={[{ label: 'タグ一覧' }]} />
       <h1 className="text-3xl font-bold mb-8">タグ一覧</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {tags.map(({ tag, count }) => (

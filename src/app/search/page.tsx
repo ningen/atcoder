@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import Search from '@/components/Search';
+import Breadcrumb from '@/components/Breadcrumb';
 
 interface SearchIndex {
   title: string;
@@ -37,6 +38,7 @@ export default async function SearchPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <Breadcrumb items={[{ label: '記事検索' }]} />
       <h1 className="text-3xl font-bold mb-8">記事検索</h1>
       <div className="max-w-2xl mx-auto">
         <Search initialSearchIndex={searchIndex} />
