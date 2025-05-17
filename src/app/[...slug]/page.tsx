@@ -1,10 +1,12 @@
 import fs from 'fs';
 import path from 'path';
-import { notFound } from 'next/navigation';
 import { marked } from 'marked';
+import { notFound } from 'next/navigation';
+import { Dirent } from 'fs';
 import { Metadata } from 'next';
 import hljs from 'highlight.js';
 import matter from 'gray-matter';
+import NoteLink from '@/components/NoteLink';
 import 'highlight.js/styles/github-dark.css';
 
 // markedの設定
@@ -24,40 +26,54 @@ interface PageProps {
   }>;
 }
 
+function getAllPaths(dir: string, basePath: string[] = []): string[][] {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  const paths: string[][] = [];
+  
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    const relativePath = [...basePath, entry.name];
+    
+    if (entry.isDirectory()) {
+      paths.push(relativePath);
+      paths.push(...getAllPaths(fullPath, relativePath));
+    } else if (entry.name.endsWith('.md')) {
+      paths.push(relativePath.map(p => p.replace(/\.md$/, '')));
+    }
+  }
+  
+  return paths;
+}
+
 export async function generateStaticParams() {
   const notesDir = path.join(process.cwd(), 'notes');
-  const files = fs.readdirSync(notesDir, { recursive: true })
-    .filter((file): file is string => typeof file === 'string' && file.endsWith('.md'));
-
-  return files.map((file) => ({
-    slug: file.replace(/\.md$/, '').split(path.sep),
-  }));
+  const paths = getAllPaths(notesDir);
+  
+  // ルートパスを追加
+  return [
+    { slug: [] },
+    ...paths.map((path) => ({
+      slug: path,
+    }))
+  ];
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const resolvedParams = await params;
-  const filePath = path.join(process.cwd(), 'notes', ...resolvedParams.slug) + '.md';
-  
-  try {
-    const fileContent = fs.readFileSync(filePath, 'utf-8');
-    const { data } = matter(fileContent);
-    return {
-      title: resolvedParams.slug.join('/'),
-      description: data.description || '',
-    };
-  } catch {
-    return {
-      title: resolvedParams.slug.join('/'),
-    };
-  }
+  const title = resolvedParams.slug.length === 0 ? 'コンテンツ一覧' : resolvedParams.slug.join('/');
+  return {
+    title,
+  };
 }
 
 export default async function NotePage({ params }: PageProps) {
   const resolvedParams = await params;
-  const filePath = path.join(process.cwd(), 'notes', ...resolvedParams.slug) + '.md';
+  const basePath = path.join(process.cwd(), 'notes', ...resolvedParams.slug);
+  const mdPath = basePath + '.md';
   
   try {
-    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    // まずマークダウンファイルを試す
+    const fileContent = fs.readFileSync(mdPath, 'utf-8');
     const { content, data } = matter(fileContent);
     const html = marked(content);
 
@@ -83,7 +99,37 @@ export default async function NotePage({ params }: PageProps) {
       </div>
     );
   } catch (error) {
-    console.error(`Failed to load file: ${filePath}`, error);
-    notFound();
+    // マークダウンファイルが存在しない場合は、ディレクトリの内容を表示
+    try {
+      const entries = fs.readdirSync(basePath, { withFileTypes: true });
+      const currentPath = resolvedParams.slug.join('/');
+
+      // .mdファイルとディレクトリのみをフィルタリング
+      const filteredEntries = entries.filter(entry => 
+        entry.isDirectory() || entry.name.endsWith('.md')
+      );
+
+      return (
+        <div className="container mx-auto px-4 py-8">
+          <h1 className="text-3xl font-bold mb-6">{currentPath || 'コンテンツ一覧'}</h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredEntries.map((entry) => {
+              const name = entry.name.replace(/\.md$/, '');
+              return (
+                <NoteLink
+                  key={entry.name}
+                  href={`/${currentPath}/${name}`}
+                  title={name}
+                  isDirectory={entry.isDirectory()}
+                />
+              );
+            })}
+          </div>
+        </div>
+      );
+    } catch (dirError) {
+      console.error(`Failed to load directory: ${basePath}`, dirError);
+      notFound();
+    }
   }
 } 
