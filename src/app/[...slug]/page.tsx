@@ -83,13 +83,10 @@ export default async function NotePage({ params }: PageProps) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Breadcrumb
-          items={[
-            { label: '記事一覧', href: '/' },
-            ...resolvedParams.slug.map((part, index) => ({
-              label: part,
-              href: index === resolvedParams.slug.length - 1 ? undefined : `/${resolvedParams.slug.slice(0, index + 1).join('/')}`
-            }))
-          ]}
+          items={resolvedParams.slug.map((part, index) => ({
+            label: part,
+            href: index === resolvedParams.slug.length - 1 ? undefined : `/${resolvedParams.slug.slice(0, index + 1).join('/')}`
+          }))}
         />
         {data.tags && data.tags.length > 0 && (
           <div className="flex gap-2 mb-4">
@@ -119,13 +116,10 @@ export default async function NotePage({ params }: PageProps) {
       return (
         <div className="container mx-auto px-4 py-8">
           <Breadcrumb
-            items={[
-              { label: '記事一覧', href: '/' },
-              ...resolvedParams.slug.map((part, index) => ({
-                label: part,
-                href: index === resolvedParams.slug.length - 1 ? undefined : `/${resolvedParams.slug.slice(0, index + 1).join('/')}`
-              }))
-            ]}
+            items={resolvedParams.slug.map((part, index) => ({
+              label: part,
+              href: index === resolvedParams.slug.length - 1 ? undefined : `/${resolvedParams.slug.slice(0, index + 1).join('/')}`
+            }))}
           />
           <h1 className="text-3xl font-bold mb-6">{currentPath || 'コンテンツ一覧'}</h1>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
