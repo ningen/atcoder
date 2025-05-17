@@ -5,7 +5,7 @@ import { Metadata } from 'next';
 import matter from 'gray-matter';
 
 export const metadata: Metadata = {
-  title: 'AtCoder Notes',
+  title: 'Ningen AtCoder Study Notes',
   description: 'AtCoderの学習記録',
 };
 
