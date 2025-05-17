@@ -1,14 +1,15 @@
 import fs from 'fs';
 import path from 'path';
-import Link from 'next/link';
 import matter from 'gray-matter';
 import { notFound } from 'next/navigation';
 import Breadcrumb from '@/components/Breadcrumb';
+import NoteLink from '@/components/NoteLink';
 
 interface Article {
   slug: string[];
   title: string;
   tags: string[];
+  date: string;
 }
 
 interface PageProps {
@@ -53,12 +54,12 @@ export default async function TagPage({ params }: PageProps) {
       const filePath = path.join(notesDir, file);
       const content = fs.readFileSync(filePath, 'utf-8');
       const { data } = matter(content);
-      const title = data.title;
-      console.log(title, { tags: data.tags || []})
+      const stats = fs.statSync(filePath);
       return {
         slug: file.replace(/\.md$/, '').split(path.sep),
         title: data.title || file.replace(/\.md$/, ''),
         tags: data.tags || [],
+        date: stats.birthtime.toISOString()
       };
     })
     .filter(article => article.tags.includes(decodedTag))
@@ -81,23 +82,13 @@ export default async function TagPage({ params }: PageProps) {
       </h1>
       <div className="space-y-4">
         {articles.map(article => (
-          <Link
+          <NoteLink
             key={article.slug.join('/')}
             href={`/${article.slug.join('/')}`}
-            className="block p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            <h2 className="text-xl font-medium">{article.title}</h2>
-            <div className="flex gap-2 mt-2">
-              {article.tags.map(tag => (
-                <span
-                  key={tag}
-                  className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </Link>
+            title={article.title}
+            date={article.date}
+            tags={article.tags}
+          />
         ))}
       </div>
     </div>
