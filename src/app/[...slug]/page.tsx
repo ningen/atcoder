@@ -26,6 +26,11 @@ interface PageProps {
   }>;
 }
 
+// Helper function to handle URL encoding/decoding
+function normalizeSlug(slug: string[]) {
+  return slug.map(segment => decodeURIComponent(segment));
+}
+
 function getAllPaths(dir: string, basePath: string[] = []): string[][] {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   const paths: string[][] = [];
@@ -49,8 +54,9 @@ export async function generateStaticParams() {
   const notesDir = path.join(process.cwd(), 'notes');
   const paths = getAllPaths(notesDir);
   
-  return paths.map((path) => ({
-    slug: path,
+  return paths.map((pathSegments) => ({
+    // スラッグ全体を配列のまま維持し、パスセグメントとして扱えるようにする
+    slug: pathSegments,
   }));
 }
 
@@ -64,7 +70,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function NotePage({ params }: PageProps) {
   const resolvedParams = await params;
-  const basePath = path.join(process.cwd(), 'notes', ...resolvedParams.slug);
+  // Normalize the slug to handle URL encoding
+  const normalizedSlug = normalizeSlug(resolvedParams.slug);
+  const basePath = path.join(process.cwd(), 'notes', ...normalizedSlug);
   const mdPath = basePath + '.md';
   
   try {
@@ -76,9 +84,9 @@ export default async function NotePage({ params }: PageProps) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Breadcrumb
-          items={resolvedParams.slug.map((part, index) => ({
+          items={normalizedSlug.map((part, index) => ({
             label: part,
-            href: index === resolvedParams.slug.length - 1 ? undefined : `/${resolvedParams.slug.slice(0, index + 1).join('/')}`
+            href: index === normalizedSlug.length - 1 ? undefined : `/${normalizedSlug.slice(0, index + 1).map(encodeURIComponent).join('/')}`
           }))}
         />
         {data.tags && data.tags.length > 0 && (
@@ -86,7 +94,7 @@ export default async function NotePage({ params }: PageProps) {
             {data.tags.map((tag: string) => (
               <a
                 key={tag}
-                href={`/tags/${(tag)}`}
+                href={`/tags/${encodeURIComponent(tag)}`}
                 className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm hover:bg-blue-200 transition-colors"
               >
                 {tag}
@@ -104,14 +112,14 @@ export default async function NotePage({ params }: PageProps) {
     // マークダウンファイルが存在しない場合は、ディレクトリの内容を表示
     try {
       const entries = fs.readdirSync(basePath, { withFileTypes: true });
-      const currentPath = resolvedParams.slug.join('/');
+      const currentPath = normalizedSlug.join('/');
 
       return (
         <div className="container mx-auto px-4 py-8">
           <Breadcrumb
-            items={resolvedParams.slug.map((part, index) => ({
+            items={normalizedSlug.map((part, index) => ({
               label: part,
-              href: index === resolvedParams.slug.length - 1 ? undefined : `/${resolvedParams.slug.slice(0, index + 1).join('/')}`
+              href: index === normalizedSlug.length - 1 ? undefined : `/${normalizedSlug.slice(0, index + 1).map(encodeURIComponent).join('/')}`
             }))}
           />
           <h1 className="text-3xl font-bold mb-6">{currentPath || 'コンテンツ一覧'}</h1>
@@ -124,7 +132,7 @@ export default async function NotePage({ params }: PageProps) {
               return (
                 <NoteLink
                   key={entry.name}
-                  href={`/${currentPath}/${name}`}
+                  href={`/${currentPath ? currentPath + '/' : ''}${encodeURIComponent(name)}`}
                   title={name}
                   isDirectory={entry.isDirectory()}
                   date={createdAt}

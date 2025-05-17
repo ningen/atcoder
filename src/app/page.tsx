@@ -55,7 +55,7 @@ export default async function Home() {
         {latestNotes.map((note) => (
           <NoteLink
             key={note.slug}
-            href={`/${note.slug}`}
+            href={`/${note.slug.split('/').map(encodeURIComponent).join('/')}`}
             title={note.title}
             date={note.date}
             tags={note.tags}

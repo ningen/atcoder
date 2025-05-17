@@ -84,7 +84,7 @@ export default async function TagPage({ params }: PageProps) {
         {articles.map(article => (
           <NoteLink
             key={article.slug.join('/')}
-            href={`/${article.slug.join('/')}`}
+            href={`/${article.slug.map(segment => encodeURIComponent(segment)).join('/')}`}
             title={article.title}
             date={article.date}
             tags={article.tags}
