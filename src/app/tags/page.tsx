@@ -40,7 +40,7 @@ export default function TagsPage() {
         {tags.map(({ tag, count }) => (
           <Link
             key={tag}
-            href={`/tags/${encodeURIComponent(tag)}`}
+            href={`/tags/${tag}`}
             className="p-4 border rounded-lg hover:bg-gray-50 transition-colors"
           >
             <div className="flex justify-between items-center">

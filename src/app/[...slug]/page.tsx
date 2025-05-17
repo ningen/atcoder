@@ -86,7 +86,7 @@ export default async function NotePage({ params }: PageProps) {
             {data.tags.map((tag: string) => (
               <a
                 key={tag}
-                href={`/tags/${encodeURIComponent(tag)}`}
+                href={`/tags/${(tag)}`}
                 className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm hover:bg-blue-200 transition-colors"
               >
                 {tag}
