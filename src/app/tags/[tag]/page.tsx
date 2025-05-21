@@ -38,13 +38,13 @@ export async function generateStaticParams() {
   });
 
   return Array.from(tagSet).map(tag => ({
-    tag: tag,
+    tag: encodeURIComponent(tag),
   }));
 }
 
 export default async function TagPage({ params }: PageProps) {
   const resolvedParams = await params;
-  const decodedTag = resolvedParams.tag;
+  const decodedTag = decodeURIComponent(resolvedParams.tag); // <-- Changed back to this
   const notesDir = path.join(process.cwd(), 'notes');
   const files = fs.readdirSync(notesDir, { recursive: true })
     .filter((file): file is string => typeof file === 'string' && file.endsWith('.md'));
@@ -58,7 +58,7 @@ export default async function TagPage({ params }: PageProps) {
       return {
         slug: file.replace(/\.md$/, '').split(path.sep),
         title: data.title || file.replace(/\.md$/, ''),
-        tags: (data.tags || []).map((t: string) => decodeURIComponent(t)),
+        tags: data.tags || [], // <-- Changed line
         date: stats.birthtime.toISOString()
       };
     })
