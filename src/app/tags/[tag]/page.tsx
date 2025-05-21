@@ -38,13 +38,13 @@ export async function generateStaticParams() {
   });
 
   return Array.from(tagSet).map(tag => ({
-    tag: encodeURIComponent(tag),
+    tag: tag, // <-- Changed line
   }));
 }
 
 export default async function TagPage({ params }: PageProps) {
   const resolvedParams = await params;
-  const decodedTag = decodeURIComponent(resolvedParams.tag); // <-- Changed back to this
+  const decodedTag = resolvedParams.tag; // <-- Changed line
   const notesDir = path.join(process.cwd(), 'notes');
   const files = fs.readdirSync(notesDir, { recursive: true })
     .filter((file): file is string => typeof file === 'string' && file.endsWith('.md'));

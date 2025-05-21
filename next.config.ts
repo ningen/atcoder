@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
-  trailingSlash: false, // <-- Changed line
+  trailingSlash: true, // <-- Changed line
 };
 
 export default nextConfig;
