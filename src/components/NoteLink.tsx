@@ -37,12 +37,13 @@ export default function NoteLink({ href, title, date, tags = [], isDirectory = f
               {tags.length > 0 && (
                 <div className="flex space-x-2">
                   {tags.map(tag => (
-                    <span
+                    <Link
                       key={tag}
+                      href={`/tags/${encodeURIComponent(tag)}`}
                       className="text-gray-400 hover:text-gray-300"
                     >
                       #{tag}
-                    </span>
+                    </Link>
                   ))}
                 </div>
               )}
